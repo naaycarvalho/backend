@@ -64,7 +64,7 @@ export default class Eventos {
 
     
     //sobrescrita do método toString()
-    toString() {
+    toString() { 
          //string literals
          return `Evento: ${this.#Idevento}
 Artista: ${this.#artista}
@@ -72,14 +72,23 @@ Preco ingresso: ${this.#preco_ingresso}
 Local evento: ${this.#local_evento}
 Data evento: ${this.#data_evento}
 Hora evento: ${this.#hora_evento}
-        `
+` 
+}
+        toJSON(){
+            return {
+                "Idevento": this.#Idevento,
+                "artista": this.#artista,
+                "preço_ingresso": this.#preco_ingresso,
+                "local_evento": this.#local_evento,
+                "data_evento": this.#data_evento,
+                "hora_evento": this.#hora_evento
+                
+            }
+        }
 
-    
-    
-    }
     async incluir(){
         const eventosDAO = new EventosDAO();
-        await eventosDAO.incluir(this);
+        this.#Idevento = await eventosDAO.incluir(this);
     }
 
     async atualizar(){
@@ -92,9 +101,9 @@ Hora evento: ${this.#hora_evento}
         await eventosDAO.excluir(this);
     }
 
-    async consultar(termoBusca){
+    async consultar(termoBusca) {
         const eventosDAO = new EventosDAO();
-        return await eventosDAO.consultar(termoBusca);
+        return eventosDAO.consultar(termoBusca);
     }
-
-}
+  
+    }

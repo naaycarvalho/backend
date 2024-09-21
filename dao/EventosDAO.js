@@ -42,6 +42,7 @@ export default class EventosDAO {
                     eventos.hora_evento
                 ];
                 await conexao.execute(sql, parametros);
+                return await resultado [0].insertID;
                 await global.poolConexoes.releaseConnection(conexao);
             } catch (erro) {
                 console.error("Erro ao incluir evento:", erro);
@@ -54,12 +55,14 @@ export default class EventosDAO {
             try {
                 const conexao = await conectar();
                 const sql = `UPDATE Eventos SET 
+                             artista = ?,
                              preco_ingresso = ?, 
                              local_evento = ?, 
                              data_evento = ?, 
                              hora_evento = ? 
                              WHERE Idevento = ?;`;
                 const parametros = [
+                    eventos.artista,
                     eventos.preco_ingresso,
                     eventos.local_evento,
                     eventos.data_evento,
@@ -93,8 +96,8 @@ export default class EventosDAO {
         let sql = "";
         let parametros = [];
         if (termoBusca) {
-            sql = `SELECT * FROM Eventos WHERE artista = ? ORDER BY data_evento;`;
-            parametros.push(termoBusca);
+            sql = `SELECT * FROM Eventos WHERE artista LIKE ? ORDER BY data_evento;`;
+            parametros.push(`%${termoBusca}%`);
         } else {
             sql = `SELECT * FROM Eventos ORDER BY data_evento;`;
         }
@@ -104,7 +107,7 @@ export default class EventosDAO {
             const [registros] = await conexao.execute(sql, parametros);
             let listaEventos = [];
             for (const registro of registros) {
-                const evento = new Eventos(
+                const evento = new Eventos (
                     registro.Idevento,
                     registro.artista,
                     registro.preco_ingresso,
