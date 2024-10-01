@@ -42,10 +42,16 @@ const evento = new Eventos("4npm",
 
 import express from "express";
 import rotaEvento from "./Rotas/rotaEvento.js";
+import cors from "cors";
 
 const app = express();
 const host ='0.0.0.0'; 
 const porta = 4000;
+
+app.use(cors({
+    origin: "*",
+
+}));
 
 app.use(express.json());
 
